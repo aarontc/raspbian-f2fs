@@ -1,9 +1,12 @@
 # raspbian-f2fs
 
-script takes .zip image, and either:
-- creates a f2fs sdcard (partition resize on the go, double check the sdcard device name)
-- creates a f2fs new image to flash (not resized)
+This script takes a .zip or .img file and either:
+- Writes an F2FS installation directly to an SD card or USB flash device.
+(The root partition is expanded to fill the device during write.)
+- Creates a new F2FS image that can be flashed just like the original image.
+(The root partition will be automatically expanded during first boot.)
 
-In either case it boots, further tests are needed.
+In either case it boots it seems to boot and work well. I've been using F2FS in
+several production Pi's for several months with no issues.
 
-I could not find a way to resize the f2fs partition, so the sdcard method is prefered.
+Syntax: raspbian-f2fs source.zip|img /dev/target|target.img
