@@ -330,7 +330,7 @@ EOF
 	kernelver=$(ls ${targetroot}/lib/modules/ | grep "v7+" | head -n 1)
 
 	# Modify the init_resize script to start our custom initramfs after expanding the partition.
-	test -r $targetroot/usr/lib/raspi-config/init_resize.sh || cp $targetroot/usr/lib/raspi-config/init_resize.sh $targetroot/usr/lib/raspi-config/init_resize.old
+	test -r $targetroot/usr/lib/raspi-config/init_resize.sh && cp $targetroot/usr/lib/raspi-config/init_resize.sh $targetroot/usr/lib/raspi-config/init_resize.old
 	let linenum=$(grep -n "mount / -o remount,rw"  "$targetroot/usr/lib/raspi-config/init_resize.sh" | head -n 1 | cut -d: -f1)+2
 	sed -i ''"$linenum"'i echo "initramfs initrd.img followkernel" >> /boot/config.txt' "$targetroot/usr/lib/raspi-config/init_resize.sh"
 	sed -i ''"$linenum"'i sed -i \x27\x27"$(grep -n "exit 0"  "/etc/rc.local" | tail -n 1 | cut -d: -f1)"\x27i /bin/bash /etc/f2fsresize_cleanup\x27 /etc/rc.local' "$targetroot/usr/lib/raspi-config/init_resize.sh"
