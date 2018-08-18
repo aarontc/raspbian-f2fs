@@ -32,8 +32,6 @@ sourcedev=$(losetup -f)
 sourceboot=/mnt/source_boot
 sourceroot=/mnt/source_root
 
-imgsrc="${filename%%.*}.img"
-
 raspimgver="2018-06-27"
 scriptver="v207"
 
@@ -92,10 +90,15 @@ if [ "$(dpkg-query -W -f='${Status}' f2fs-tools 2>/dev/null | grep -c "ok instal
 	apt-get -qq install f2fs-tools
 fi
 
-# Do not unzip if we're already working with an image.
+# Check to see if our source is a zip file or image.
 if [ "${filename#*.}" = "zip" ]; then
-	echo "${cmdname}: Unzipping $filename -> $imgsrc."
+	imgsrc="${filename%%.*}.img"
+	echo "${cmdname}: Source appears to be a zip file."
+	echo "Unzipping $filename -> $imgsrc."
 	test -r "$imgsrc" || unzip -p "$filename" > "$imgsrc"
+elif [ "${filename#*.}" = "img" ]; then
+	imgsrc="$filename"
+	echo "${cmdname}: Source appears to be an image."
 fi
 
 # Check to see if our target is a device or image.
